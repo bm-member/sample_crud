@@ -5,12 +5,15 @@ namespace App\Http\Controllers;
 use App\Post;
 use Illuminate\Http\Request;
 // use Auth;
+use App\Http\Requests\PostRequest;
 
 class PostController extends Controller
 {
     public function index()
     {
-        $posts = Post::all();
+        // $posts = Post::all();
+        // $posts = Post::orderBy('id', 'desc')->get();
+        $posts = Post::orderBy('id', 'desc')->paginate(10);
         return view('post.index', compact('posts'));
     }
 
@@ -19,23 +22,34 @@ class PostController extends Controller
         return view('post.create');
     }
   
-    public function store(Request $req)
+    public function store(PostRequest $req)
     {
-        $req->validate([
+        
+
+        /* $req->validate([
             'title' => 'required|min:5',
             'content' => 'required'
         ],[
             'title.required' => 'ခေါင်းစဉ်ထည့်ရန်လိုအပ်သည်။',
-            'title.min' => 'apple',
-            'content.required' => 'orange'
-        ]);
+            'title.min' => 'အနည်းဆုံး စာလုံး ၅ လုံးထည့်ပါ။',
+            'content.required' => 'အကြောင်းအရာထည့်ပါ။'
+        ]); */
 
-        $post = new Post();
+        /* $post = new Post();
         $post->title = $req->title;
         $post->content = $req->content;
         // $post->user_id = Auth::id();
         $post->user_id = auth()->id();
-        $post->save();
+        $post->save(); */
+
+       /*  Post::create([
+            'title' => $req->title,
+            'content' => $req->content,
+            'user_id' => auth()->id()
+        ]); */
+
+        $req->merge(['user_id' => auth()->id()]);
+        Post::create($req->all());
 
         return redirect('post')->with('status', 'Post created');
     }
@@ -54,12 +68,31 @@ class PostController extends Controller
         return view('post.edit', compact('post'));
     }
 
-    public function update(Request $req, $id)
+    public function update(PostRequest $req, $id)
     {
-        $post = Post::find($id);
+        /* $req->validate([
+            'title' => 'required|min:5',
+            'content' => 'required'
+        ],[
+            'title.required' => 'ခေါင်းစဉ်ထည့်ရန်လိုအပ်သည်။',
+            'title.min' => 'အနည်းဆုံး စာလုံး ၅ လုံးထည့်ပါ။',
+            'content.required' => 'အကြောင်းအရာထည့်ပါ။'
+        ]); */
+
+        /* $post = Post::find($id);
         $post->title = $req->title;
         $post->content = $req->content;
-        $post->save();
+        $post->save(); */
+
+        /* $post = Post::find($id);
+
+        $post->update([
+            'title' => $req->title,
+            'content' => $req->content
+        ]); */
+
+        $post = Post::find($id);
+        $post->update($req->all()); 
 
         return redirect('post')->with('status', 'Post updated');
     }

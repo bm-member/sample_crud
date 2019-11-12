@@ -22,6 +22,7 @@
             </a>
         </div>
     </div>
+
     <div class="row">
         @foreach($posts as $post)
         <div class="col-md-12 mb-3">
@@ -31,19 +32,30 @@
                     {{ $post->title }}
                 </div>
                 <div class="card-body">
-                    {{ $post->content }}
+                    {{ substr($post->content, 0, 200) }}
                 </div>
-                <div class="card-footer text-right">
-                    <a href="{{ url("post/$post->id") }}" class="btn btn-primary">View</a>
-                    <a href="{{ url("post/$post->id/edit") }}" class="btn btn-success">Edit</a>
-                    <a href="{{ url("post/$post->id/delete") }}" 
-                        onclick="return confirm('Are you sure to delete this post?')"
-                        class="btn btn-danger">Delete</a>
+                <div class="card-footer">
+                    <div>
+                        Posted by {{ $post->user->name }} on {{ $post->created_at->diffForHumans() }}
+                    </div>
+                    <div class="float-right">
+                        <a href="{{ url("post/$post->id") }}" class="btn btn-primary">View</a>
+                        <a href="{{ url("post/$post->id/edit") }}" class="btn btn-success">Edit</a>
+                        <a href="{{ url("post/$post->id/delete") }}"
+                            onclick="return confirm('Are you sure to delete this post?')"
+                            class="btn btn-danger">Delete</a>
+                    </div>
                 </div>
             </div>
 
         </div>
         @endforeach
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            {{ $posts->links() }}
+        </div>
     </div>
 </div>
 @endsection
